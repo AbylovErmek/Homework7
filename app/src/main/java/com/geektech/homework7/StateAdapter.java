@@ -6,28 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class StateAdapter extends RecyclerView.Adapter<StateAdapter.ViewHolder> {
 
-    private RadioGroup group;
     private Context context;
-    private OnItemClickListener listener;
-
-    interface OnStateClickListener {
-        void onStateClick(State state, int position);
-    }
 
     private final LayoutInflater inflater;
     private final List<State> states;
+    private String selectedColor = "";
+
 
     StateAdapter(Context context, List<State> states) {
         this.states = states;
@@ -48,13 +41,30 @@ public class StateAdapter extends RecyclerView.Adapter<StateAdapter.ViewHolder> 
         holder.flagView.setImageDrawable(state.getFlagResource());
         holder.nameView.setText(state.getName());
         holder.capitalView.setText(state.getCapital());
+
         holder.itemView.setOnClickListener(v -> {
-            listener.onClick(holder.getAdapterPosition());
+            String[] list = {"Синиий", "Черный", "Желтый", "Красный"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Выбери цвет");
+            builder.setSingleChoiceItems(list, 0, (dialog, which) -> {
+                selectedColor = list[which];
+            }).setPositiveButton("Ок", (dialog, which) -> {
+                if (selectedColor.equals("Синиий")) {
+                    holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.purple_700));
+                } else if (selectedColor.equals("Черный")) {
+                    holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.black));
+                } else if (selectedColor.equals("Желтый")) {
+                    holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.purple_200));
+                } else if (selectedColor.equals("Красный")) {
+                    holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.teal_200));
+                }
+                dialog.dismiss();
+            }).show();
         });
 
         holder.itemView.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setTitle("Удаление").setNegativeButton("Нет", (dialog, which) -> dialog.cancel())
+            builder.setTitle("Вы точно хотите удалить?").setNegativeButton("Нет", (dialog, which) -> dialog.cancel())
                     .setPositiveButton("Да", (dialog, which) -> {
                         states.remove(position);
                         notifyDataSetChanged();
@@ -80,9 +90,5 @@ public class StateAdapter extends RecyclerView.Adapter<StateAdapter.ViewHolder> 
             nameView = view.findViewById(R.id.name);
             capitalView = view.findViewById(R.id.capital);
         }
-    }
-
-    public interface OnItemClickListener{
-        void onClick(int pos);
     }
 }

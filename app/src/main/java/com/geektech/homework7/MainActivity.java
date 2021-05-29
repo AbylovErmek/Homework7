@@ -13,11 +13,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements StateAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private List<State> states = new ArrayList<>();
     private StateAdapter adapter;
-    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +26,6 @@ public class MainActivity extends AppCompatActivity implements StateAdapter.OnIt
         RecyclerView recyclerView = findViewById(R.id.list);
 
         initAdapter(recyclerView);
-
-        getData(recyclerView);
-    }
-
-    private void getData(RecyclerView recyclerView) {
-        int value = getIntent().getIntExtra("Constants.key.Color", 0);
-        if (value != 0){
-            recyclerView.findViewById(pos).setBackgroundColor(value);
-            adapter.notifyDataSetChanged();
-        }
     }
 
     private void initAdapter(RecyclerView recyclerView) {
@@ -52,11 +41,5 @@ public class MainActivity extends AppCompatActivity implements StateAdapter.OnIt
         states.add(new State("Колумбия", "Богота", getDrawable(R.drawable.ic_columbia2), getResources().getColor(R.color.black)));
         states.add(new State("Уругвай", "Монтевидео", getDrawable(R.drawable.ic_urugvai), getResources().getColor(R.color.black)));
         states.add(new State("Чили", "Сантьяго", getDrawable(R.drawable.ic_chile), getResources().getColor(R.color.black)));
-    }
-
-    @Override
-    public void onClick(int pos) {
-        this.pos = pos;
-        new ChooseColorDialog().show(this.getSupportFragmentManager(), "ChooseColorDialog");
     }
 }
